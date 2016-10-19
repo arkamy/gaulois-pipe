@@ -37,6 +37,7 @@ public class Config implements Verifiable {
      * it's here...
      */
     public transient String __instanceName;
+    public transient String __messageListenerClassName;
     
 
     public Config(XdmNode node) {

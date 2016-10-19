@@ -654,6 +654,14 @@ public class GauloisPipe {
         }
     }
 
+    /**
+     * Returns the message listener used by this instance.
+     * Mainly present for tests
+     * @return The message listener ; it can be <tt>null</tt>
+     */
+    MessageListener getMessageListener() {
+        return messageListener;
+    }
 
     /**
      * Main entry point of saxon xslt pipe.<br>
@@ -829,6 +837,7 @@ public class GauloisPipe {
         config.skipSchemaValidation(skipSchemaValidation);
         config.verify();
         config.__instanceName=__instanceName;
+        config.__messageListenerClassName=_messageListener;
         return config;
     }
 
@@ -944,6 +953,14 @@ public class GauloisPipe {
 
     public void setConfig(Config config) {
         this.config = config;
+        if(config.__messageListenerClassName!=null) {
+            try {
+                Class clazz = Class.forName(config.__messageListenerClassName);
+                this.messageListenerclass = clazz;
+            } catch(Exception ex) {
+                LOGGER.warn("Recoverable error : fail to load "+config.__messageListenerClassName);
+            }
+        }
     }
 
     public String getInstanceName() {

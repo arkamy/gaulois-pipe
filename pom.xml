@@ -6,9 +6,13 @@
 
     <groupId>top.marchand.xml</groupId>
     <artifactId>gaulois-pipe</artifactId>
-    <version>1.00.01-SNAPSHOT</version>
+    <version>1.00.00-1</version>
+
+    <name>Gaulois-pipe</name>
 
     <description>A XSLT pipelining solution</description>
+
+    <url>https://github/cmarchand/gaulois-pipe</url>
     
     <licenses>
         <license>
@@ -137,6 +141,17 @@
         </dependency>
     </dependencies>
 
+    <distributionManagement>
+        <snapshotRepository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <repository>
+            <id>ossrh</id>
+            <url>https://oss.sonatype.org/service/local/staging/deploy/maven2/</url>
+        </repository>
+    </distributionManagement>
+
     <build>
         <pluginManagement>
             <plugins>
@@ -189,6 +204,16 @@
                             <addClasspath>true</addClasspath>
                             <mainClass>fr.efl.chaine.xslt.GauloisPipe</mainClass>
                         </manifest>
+                        <manifestEntries>
+                            <Build-Tag>${build-tag}</Build-Tag>
+                            <Git-Commit>${build-commit}</Git-Commit>
+                            <Git-Commit-Abbrev>${build-commit-abbrev}</Git-Commit-Abbrev>
+                            <Build-Version>${build-version}</Build-Version>
+                            <Build-Timestamp>${build-tstamp}</Build-Timestamp>
+                            <Source-Repository>${project.scm.connection}</Source-Repository>
+                            <Description>${project.description}</Description>
+                            <Website>${project.url}</Website>
+                        </manifestEntries>
                     </archive>
                 </configuration>
             </plugin>
@@ -245,20 +270,20 @@
                     </execution>
                 </executions>
             </plugin>
-            <!--plugin> 
-                <groupId>org.tinyjee.dim</groupId> 
-                <artifactId>doxia-include-macro</artifactId> 
-                <version>1.1</version> 
-                <executions> 
-                    <execution> 
-                        <id>initialize-doxia-include-macro</id> 
-                        <phase>pre-site</phase> 
-                        <goals> 
-                            <goal>initialize</goal> 
-                        </goals> 
-                    </execution> 
-                </executions> 
-            </plugin-->
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-javadoc-plugin</artifactId>
+                <version>2.9.1</version>
+                <executions>
+                    <execution>
+                        <id>attach-javadocs</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>jar</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
         </plugins>
     </build>
 
@@ -274,18 +299,13 @@
 
     <profiles>
         <profile>
-            <id>release-sign-artifacts</id>
-            <activation>
-                <property>
-                    <name>performRelease</name>
-                    <value>true</value>
-                </property>
-            </activation>
+            <id>release</id>
             <build>
                 <plugins>
                     <plugin>
                         <groupId>org.apache.maven.plugins</groupId>
                         <artifactId>maven-gpg-plugin</artifactId>
+                        <version>1.6</version>
                         <executions>
                             <execution>
                                 <id>sign-artifacts</id>
@@ -295,6 +315,17 @@
                                 </goals>
                             </execution>
                         </executions>
+                    </plugin>
+                    <plugin>
+                        <groupId>org.sonatype.plugins</groupId>
+                        <artifactId>nexus-staging-maven-plugin</artifactId>
+                        <version>1.6.7</version>
+                        <extensions>true</extensions>
+                        <configuration>
+                            <serverId>ossrh</serverId>
+                            <nexusUrl>https://oss.sonatype.org/</nexusUrl>
+                            <autoReleaseAfterClose>true</autoReleaseAfterClose>
+                        </configuration>
                     </plugin>
                 </plugins>
             </build>
