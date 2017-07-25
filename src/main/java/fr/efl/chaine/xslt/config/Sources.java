@@ -8,7 +8,6 @@ package fr.efl.chaine.xslt.config;
 
 import net.sf.saxon.s9api.QName;
 import fr.efl.chaine.xslt.InvalidSyntaxException;
-import fr.efl.chaine.xslt.utils.ParameterValue;
 import java.io.File;
 import java.util.*;
 
@@ -64,31 +63,6 @@ public class Sources implements Verifiable {
                 long ret = "name".equals(orderBy) ? t.getSource().getName().compareTo(t1.getSource().getName()) : t.getSource().length()-t1.getSource().length();
                 if("desc".equals(sort)) ret = -ret;
                 if(ret==0l) {
-                    // on compare les paramètres !
-//                    TreeSet<String> tsParams = new TreeSet<>();
-//                    HashMap<String,ParameterValue> map1 = new HashMap<>();
-//                    HashMap<String,ParameterValue> map2 = new HashMap<>();
-//                    for(ParameterValue pv:t.getParams()) {
-//                        tsParams.add(pv.getKey());
-//                        map1.put(pv.getKey(), pv);
-//                    }
-//                    for(ParameterValue pv:t1.getParams()) {
-//                        tsParams.add(pv.getKey());
-//                        map2.put(pv.getKey(), pv);
-//                    }
-//                    for(String key:tsParams) {
-//                        ParameterValue pv1 = map1.get(key);
-//                        ParameterValue pv2 = map2.get(key);
-//                        if(pv1!=null && pv2!=null) {
-//                            ret += pv1.getValue().compareTo(pv2.getValue());
-//                        } else if(pv1==null) ret--;
-//                        else ret++;
-//                    }
-//                    if(ret==0) {
-//                        // les fichiers ont la meme tailee, les paramètres sont identique, on s'intéresse aux chemins absolus.
-//                        ret = t.getSource().getAbsolutePath().compareTo(t1.getSource().getAbsolutePath());
-//                    }
-//                    LOGGER.trace("comparing "+t.getSource().getName()+" and "+t1.getSource().getName()+" -> "+ret);
                     return (int)ret;
                 }
                 else if (ret<0l) return -1;
@@ -102,7 +76,7 @@ public class Sources implements Verifiable {
             return files;
         } else {
             LOGGER.trace("getFiles() sort {} files with orderBy={} and sort={}", new Object[]{files.size(), orderBy, sort});
-            List<CfgFile> ret = new ArrayList<CfgFile>(files);
+            List<CfgFile> ret = new ArrayList<>(files);
             Collections.sort(ret, getComparator(orderBy, sort));
             LOGGER.trace("getFiles() return {} files", ret.size());
             return ret;
@@ -151,31 +125,27 @@ public class Sources implements Verifiable {
     
     public List<CfgFile> getFilesOverLimit(long limit) {
         // on va quand même les renvoyer triès comme demandés
-        List<CfgFile> files = getFiles("size", "asc");
-        List<CfgFile> ret = new ArrayList<CfgFile>(files.size());
-        for(CfgFile file: files) {
+        List<CfgFile> _files = getFiles("size", "asc");
+        List<CfgFile> ret = new ArrayList<>(_files.size());
+        for(CfgFile file: _files) {
             if(file.getSource().length()>limit) {
                 ret.add(file);
-            } else {
-                break;
             }
         }
-        Collections.sort(files, getComparator(orderBy, sort));
+        Collections.sort(_files, getComparator(orderBy, sort));
         LOGGER.debug("getFilesOverLimit() -> {}", ret.size());
         return ret;
     }
     public List<CfgFile> getFilesUnderLimit(long limit) {
         // on va quand même les renvoyer triès comme demandés
-        List<CfgFile> files = getFiles("size", "asc");
-        List<CfgFile> ret = new ArrayList<CfgFile>(files.size());
-        for(CfgFile file: files) {
+        List<CfgFile> _files = getFiles("size", "asc");
+        List<CfgFile> ret = new ArrayList<>(_files.size());
+        for(CfgFile file: _files) {
             if(file.getSource().length()<=limit) {
                 ret.add(file);
-            } else {
-                break;
             }
         }
-        Collections.sort(files, getComparator(orderBy, sort));
+        Collections.sort(_files, getComparator(orderBy, sort));
         LOGGER.debug("getFilesUnderLimit() -> {}", ret.size());
         return ret;
     }
