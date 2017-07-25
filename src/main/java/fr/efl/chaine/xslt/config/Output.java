@@ -141,7 +141,7 @@ public class Output implements Verifiable {
     }
     /**
      * Returns <tt>true</tt> if the output should not be written anywhere
-     * @return 
+     * @return <tt>true</tt> if output must be discarded
      */
     public boolean isNullOutput() {
         return nullOutput;
