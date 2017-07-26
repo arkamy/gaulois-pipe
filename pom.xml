@@ -8,7 +8,9 @@
     <artifactId>gaulois-pipe</artifactId>
     <version>1.00.01-SIEBENTO318</version>
 
+    <name>gaulois-pipe</name>
     <description>A XSLT pipelining solution</description>
+    <url>https://github.com/cmarchand/gaulois-pipe/</url>
     
     <licenses>
         <license>
